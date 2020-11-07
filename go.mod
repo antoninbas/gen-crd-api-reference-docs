@@ -10,3 +10,5 @@ require (
 	k8s.io/gengo v0.0.0-20190128074634-0689ccc1d7d6
 	k8s.io/klog v0.2.0
 )
+
+go 1.15

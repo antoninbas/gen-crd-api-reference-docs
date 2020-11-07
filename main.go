@@ -34,6 +34,8 @@ var (
 
 	flHTTPAddr = flag.String("http-addr", "", "start an HTTP server on specified addr to view the result (e.g. :8080)")
 	flOutFile  = flag.String("out-file", "", "path to output file to save the result")
+
+	flSkipMissingAPIVersion = flag.Bool("skip-missing-api-version", false, "skip packages with no API version in their path instead of failing")
 )
 
 const (
@@ -249,6 +251,10 @@ func combineAPIPackages(pkgs []*types.Package) ([]*apiPackage, error) {
 	for _, pkg := range pkgs {
 		apiGroup, apiVersion, err := apiVersionForPackage(pkg)
 		if err != nil {
+			if *flSkipMissingAPIVersion {
+				klog.Warningf("Could not get apiVersion for package %s - skipping", pkg.Path)
+				continue
+			}
 			return nil, errors.Wrapf(err, "could not get apiVersion for package %s", pkg.Path)
 		}
 
